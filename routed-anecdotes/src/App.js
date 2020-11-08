@@ -1,4 +1,8 @@
 import React, { useState } from 'react'
+import {
+  BrowserRouter as Router,
+  Switch, Route, Link, useParams, useHistory
+} from "react-router-dom"
 
 const Menu = () => {
   const padding = {
@@ -6,22 +10,55 @@ const Menu = () => {
   }
   return (
     <div>
-      <a href='#' style={padding}>anecdotes</a>
-      <a href='#' style={padding}>create new</a>
-      <a href='#' style={padding}>about</a>
+      <Link  style={padding} to="/">anecdotes</Link>
+      <Link style={padding} to="/create">create new</Link>
+      <Link style={padding} to="/about">about</Link>
     </div>
+
+
   )
+}
+
+const Notification = ({anecdoteContent}) => {
+
+
+  if(anecdoteContent)
+  {
+    return(<div style={{border: '1px solid green'}}>
+    <p>a new anecdote <b>{anecdoteContent}</b> has been created!</p>
+  </div>)
+  }
+  else
+  {
+    return null
+  }
 }
 
 const AnecdoteList = ({ anecdotes }) => (
   <div>
     <h2>Anecdotes</h2>
     <ul>
-      {anecdotes.map(anecdote => <li key={anecdote.id} >{anecdote.content}</li>)}
+      {anecdotes.map(anecdote => 
+        <li key={anecdote.id}>
+          <Link to={`/anecdotes/${anecdote.id}`}>{anecdote.content}</Link></li>)}
     </ul>
   </div>
 )
 
+const SingleAnecdote = ({anecdotes}) => {
+
+  const selectedID = useParams().id
+  const selectedAnecdote = anecdotes.find(a => a.id === selectedID)
+  
+  console.log(selectedAnecdote)
+
+  return(
+  <div>
+    <h2>{selectedAnecdote.content} by {selectedAnecdote.author}</h2>
+  <p>has {selectedAnecdote.votes} votes</p>
+  <p>for more info, see {selectedAnecdote.info}</p>
+  </div>)
+}
 const About = () => (
   <div>
     <h2>About anecdote app</h2>
@@ -48,7 +85,7 @@ const CreateNew = (props) => {
   const [content, setContent] = useState('')
   const [author, setAuthor] = useState('')
   const [info, setInfo] = useState('')
-
+  const history = useHistory()
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -58,6 +95,7 @@ const CreateNew = (props) => {
       info,
       votes: 0
     })
+    history.push('/')
   }
 
   return (
@@ -101,11 +139,15 @@ const App = () => {
     }
   ])
 
-  const [notification, setNotification] = useState('')
+  const [notification, setNotification] = useState(null)
+
+
 
   const addNew = (anecdote) => {
     anecdote.id = (Math.random() * 10000).toFixed(0)
     setAnecdotes(anecdotes.concat(anecdote))
+    setNotification(anecdote.content)
+    setTimeout(() => setNotification(null),10000)
   }
 
   const anecdoteById = (id) =>
@@ -125,10 +167,24 @@ const App = () => {
   return (
     <div>
       <h1>Software anecdotes</h1>
-      <Menu />
-      <AnecdoteList anecdotes={anecdotes} />
-      <About />
-      <CreateNew addNew={addNew} />
+      <Router>
+        <Menu/>
+          <Notification anecdoteContent={notification}/>
+          <Switch>
+            <Route path="/create">
+              <CreateNew addNew={addNew} />
+            </Route>
+            <Route path="/about">
+              <About />
+            </Route>
+            <Route path="/anecdotes/:id">
+              <SingleAnecdote anecdotes={anecdotes}/>
+            </Route>
+            <Route path="/">
+              <AnecdoteList anecdotes={anecdotes} />
+            </Route>
+        </Switch>
+      </Router>
       <Footer />
     </div>
   )
