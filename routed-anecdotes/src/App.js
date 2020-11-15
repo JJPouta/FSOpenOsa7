@@ -1,8 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState,useRef } from 'react'
 import {
   BrowserRouter as Router,
   Switch, Route, Link, useParams, useHistory
 } from "react-router-dom"
+import {useField} from './hooks/index'
 
 const Menu = () => {
   const padding = {
@@ -82,39 +83,50 @@ const Footer = () => (
 )
 
 const CreateNew = (props) => {
-  const [content, setContent] = useState('')
-  const [author, setAuthor] = useState('')
-  const [info, setInfo] = useState('')
+  const [render,setRender] = useState(0)
+  const resetMode = useRef(0)
+  const content = useField('text',resetMode)
+  const author = useField('text',resetMode)
+  const info = useField('text',resetMode)
   const history = useHistory()
 
   const handleSubmit = (e) => {
     e.preventDefault()
     props.addNew({
-      content,
-      author,
-      info,
+      content: content.value,
+      author: author.value,
+      info: info.value,
       votes: 0
     })
     history.push('/')
   }
 
+  const resetForm = (e) => {
+    e.preventDefault()
+    resetMode.current = 1
+    setRender(render + 1)
+    setTimeout(() => {resetMode.current = 0},500)
+  }
+
+  
   return (
     <div>
       <h2>create a new anecdote</h2>
       <form onSubmit={handleSubmit}>
         <div>
           content
-          <input name='content' value={content} onChange={(e) => setContent(e.target.value)} />
+          <input  name='content'  {...content}/>
         </div>
         <div>
           author
-          <input name='author' value={author} onChange={(e) => setAuthor(e.target.value)} />
+          <input  name='author'  {...author}/>
         </div>
         <div>
           url for more info
-          <input name='info' value={info} onChange={(e)=> setInfo(e.target.value)} />
+          <input  name='info'  {...info}/>
         </div>
-        <button>create</button>
+        <button type='submit'>create</button>
+        <button name='resetBtn' onClick={resetForm}>reset</button>
       </form>
     </div>
   )
@@ -145,6 +157,7 @@ const App = () => {
 
   const addNew = (anecdote) => {
     anecdote.id = (Math.random() * 10000).toFixed(0)
+    console.log(anecdote)
     setAnecdotes(anecdotes.concat(anecdote))
     setNotification(anecdote.content)
     setTimeout(() => setNotification(null),10000)
