@@ -1,7 +1,7 @@
 
 const showNotification = (content) => {
 
-    console.log('content is'+ content)
+    console.log('content is',content)
     return {
       type: 'CHANGE_NOTIFICATION',
       message: content

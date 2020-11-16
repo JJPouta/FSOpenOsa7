@@ -8,16 +8,17 @@ import blogService from './services/blogs'
 import NotificationBar from './components/Notificationbar'
 import {setNotification} from './reducers/notificationReducer'
 import { useDispatch } from 'react-redux'
+import {initBlogs} from './reducers/blogReducer'
+import {useSelector } from 'react-redux'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [currUser, setCurrUser] = useState(null)
-  const [count,setRenderCount] = useState(0)
-  const [blogReload,setBlogReload] = useState(0)
 
   const dispatch = useDispatch()
+
+  const blogs = useSelector(state => state.blogs)
 
   // Uloskirjautuu sovelluksesta
   const logOut = () => {
@@ -48,42 +49,12 @@ const App = () => {
     }
   }
 
-  const reloadAfterCreate = () => {
-
-    setBlogReload(() => blogReload + 1)
-    
-  }
-    const updateBlog = async (blog) => {
-
-    const user = blog.user.id
-    
-    const newBlogContent = {...blog,
-      likes: blog.likes += 1,
-      user: user
-    }
-    
-    await blogService.updateBlog(newBlogContent.id,newBlogContent)
-
-    setRenderCount(() => count + 1)
-  }
-
-  const removeBlog = async (id) => {
-
-    await blogService.deleteBlog(id)
-
-    setBlogReload(() => blogReload + 1)
-   
-  }
 
   useEffect(() => {
-    blogService.getAll().then(blogs => {
-      
-      // Sortataan blogit likejen mukaiseen järjestykseen suurimmasta pienempään
-      const sortedBlogs = blogs.sort((a,b) => {return b.likes - a.likes})
-      
-      setBlogs(sortedBlogs)}
-    )  
-  }, [blogReload])
+
+    dispatch(initBlogs())
+    
+  }, [dispatch])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('blogAppUser')
@@ -102,12 +73,12 @@ const App = () => {
       <LoginForm loginFunction={handleLogin} usernameFunction={setUsername} passwordFunction={setPassword}/>}
       {currUser !== null &&
       <Togglable>
-        <BlogCreatorForm bloglistReload={reloadAfterCreate}/>
+        <BlogCreatorForm/>
       </Togglable>
       }
       {currUser !== null &&
       blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} updateBlog={updateBlog} removeBlogById={removeBlog}/>)}
+        <Blog key={blog.id} blog={blog}/>)}
     </div>
   )
 }
