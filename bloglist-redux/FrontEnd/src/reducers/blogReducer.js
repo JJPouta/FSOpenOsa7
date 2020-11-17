@@ -13,14 +13,13 @@ export const initBlogs = () => {
 }
 }
 
-// Tämä ei taida kuulua tänne --> uusi reducer (7.11 kesken)
 export const addLike = (id,updatedBlog) => {
   
   return async (dispatch) => {
-    
     await blogService.updateBlog(id,updatedBlog)
     dispatch({type: 'CASTLIKE',
-    data: {id}})
+    data: {id}
+  })
     
   }
 
@@ -55,6 +54,7 @@ const reducer = (state = [], action) => {
     case 'CASTLIKE':
       const id = action.data.id
       const selectedBlog = state.find(a => a.id === id)
+      console.log(selectedBlog)
       const changedBlog = { 
         ...selectedBlog} 
         changedBlog.likes +=1

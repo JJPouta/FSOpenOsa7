@@ -32,10 +32,7 @@ const showNotification = (content) => {
   
   
   
-    const reducer = (state = null, action) => {
-      console.log('state now: ', state)
-      console.log('action', action)
-      
+    const reducer = (state = null, action) => {     
       switch (action.type) {
         case 'CHANGE_NOTIFICATION':
           const newNotification = action.message

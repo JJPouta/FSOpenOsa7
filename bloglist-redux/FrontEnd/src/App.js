@@ -51,7 +51,6 @@ const App = () => {
 
 
   useEffect(() => {
-
     dispatch(initBlogs())
     
   }, [dispatch])
