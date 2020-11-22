@@ -2,6 +2,7 @@ import React, {useState} from 'react'
 import {setNotification} from '../reducers/notificationReducer'
 import {createNewBlog} from '../reducers/blogReducer'
 import { useDispatch } from 'react-redux'
+import {Button} from 'react-bootstrap'
 
 const BlogCreatorForm = () => {
 
@@ -54,7 +55,7 @@ const BlogCreatorForm = () => {
             <label style={{display: 'inline-block',width:'100px'}}>URL</label>
             <input onChange={({ target }) => blogBuilder(target.value,target.id)} id="newBlogURL" type="text"></input>
           </div>
-          <button style={{width:'80px',backgroundColor: 'green',color:'white'}} id="submitNewBlogBtn"  type="submit">Create</button>
+          <Button style={{marginBottom: "5px"}} variant="success" id="submitNewBlogBtn"  type="submit">Create</Button>
         </div>
       </form>
     </div>)

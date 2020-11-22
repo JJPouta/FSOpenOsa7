@@ -1,6 +1,7 @@
 import React, {useState} from 'react'
 import {removeBlog,addLike} from '../reducers/blogReducer'
 import { useDispatch } from 'react-redux'
+import {Button} from 'react-bootstrap'
 
 const Blog = ({blog}) => {
 
@@ -17,7 +18,8 @@ const Blog = ({blog}) => {
 
   const updateBlog =  () => {
 
-    const user = blog.user.id
+    
+    const user = blog.user ? blog.user.id : null
     
     const newBlogContent = {...blog,
       user: user
@@ -41,14 +43,14 @@ const Blog = ({blog}) => {
   return(
     <div>
       <div style={largeBlogHidden} className='BlogInfo'>
-        <p><b>Aihe:</b>{blog.title} <b>Kirjoittaja:</b> {blog.author} <button className='ViewBtns' onClick={changeBlockVisibility}>View</button></p>
+        <p><b>Aihe:</b>{blog.title} <b>Kirjoittaja:</b> {blog.author} <Button className='ViewBtns' onClick={changeBlockVisibility}>View</Button></p>
       </div>
       <div style={largeBlogVisible} className='LargeBlogInfo'>
-        <p><b>Aihe:</b>{blog.title} <button className='HideBtns' onClick={changeBlockVisibility}>Hide</button></p>
+        <p><b>Aihe:</b>{blog.title} <Button className='HideBtns' variant="outline-secondary" onClick={changeBlockVisibility}>Hide</Button></p>
         <p><b>URL:</b>{blog.url}</p>
-        <p className='LikeRows'><b>Tykkäykset:</b>{blog.likes}<button onClick={updateBlog} className='LikeBtns'>Like</button></p>
+        <p className='LikeRows'><b>Tykkäykset:</b>{blog.likes}<Button variant="outline-success" onClick={updateBlog} className='LikeBtns'>Like</Button></p>
         <p><b>Kirjoittaja:</b>{blog.author}</p>
-        <p><button className='RemoveBtns' onClick={blogRemoval}>Remove</button></p>
+        <p><Button className='RemoveBtns'  variant="outline-danger" onClick={blogRemoval}>Remove</Button></p>
       </div>  
     </div>)
 }

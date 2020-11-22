@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import {Button, Form} from 'react-bootstrap'
 
 const LoginForm = ({loginFunction,usernameFunction,passwordFunction}) => {
 
@@ -11,20 +12,19 @@ const LoginForm = ({loginFunction,usernameFunction,passwordFunction}) => {
     
   return(
     <div>
-      <h2>Insert credentials to log in</h2>
-      <form onSubmit={loginFunction}>
-        <div>
-          <div style={{margin: '10px'}}>
-            <label style={{display: 'inline-block',width:'100px'}}>Username</label>
-            <input id='unameInput' onChange={({ target }) => usernameFunction(target.value)} type="text" placeholder="Input your username"></input>
-          </div>
-          <div style={{margin: '10px'}}>
-            <label style={{display: 'inline-block',width:'100px'}}>Password</label>
-            <input id='pwdInput' onChange={({ target }) => passwordFunction(target.value)} type="text" placeholder="Input your password"></input>
-          </div>
-          <button id='loginBtn' style={{width:'80px',backgroundColor: 'blue',color:'white'}} type="submit">Login</button>
-        </div>
-      </form>
+      <h2 style={{color:'purple'}}>Insert credentials to log in</h2>
+      <Form onSubmit={loginFunction}>
+        <Form.Group controlId="formUsername">
+            <Form.Label>Username</Form.Label>
+            <Form.Control id='unameInput' onChange={({ target }) => usernameFunction(target.value)} type="text" placeholder="Input your username"></Form.Control>
+        </Form.Group>
+         
+        <Form.Group controlId="formPassword">
+            <Form.Label>Password</Form.Label>
+            <Form.Control id='pwdInput' onChange={({ target }) => passwordFunction(target.value)} type="password" placeholder="Input your password"></Form.Control>
+        </Form.Group>
+        <Button variant="primary" id='loginBtn' type="submit">Login</Button>  
+      </Form>
     </div>)
 }
 

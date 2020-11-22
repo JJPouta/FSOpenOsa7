@@ -1,4 +1,5 @@
 import React, {useState} from 'react'
+import {Button} from 'react-bootstrap'
 
 
 const Togglable = (props) => {
@@ -14,11 +15,11 @@ const Togglable = (props) => {
    
   return(<div>
     <div style={blockHidden}>
-      <button id='newBlogBtn' onClick={changeBlockVisibility}>New blog</button>
+      <Button variant="success" id='newBlogBtn' onClick={changeBlockVisibility}>New blog</Button>
     </div>
     <div style={blockVisible}>
       {props.children}
-      <button onClick={changeBlockVisibility}>Cancel</button>
+      <Button variant="danger" onClick={changeBlockVisibility}>Cancel</Button>
     </div>
   </div>) 
     

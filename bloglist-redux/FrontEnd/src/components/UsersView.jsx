@@ -1,49 +1,63 @@
 
-import React, { useState } from 'react'
+import React from 'react'
+import {
+    Switch, Route, Link, useRouteMatch
+  } from "react-router-dom" 
+  import {Button, Table,ListGroup} from 'react-bootstrap'
+
 const { useSelector} = require("react-redux")
 
 const SingleUserView = ({singleUser}) => {
 
+    if(!singleUser){return null}
 
 return(<div>
-            <h2>{singleUser.name}</h2>
-            <h3>added blogs</h3>
-            <ul>
-                {singleUser.blogs.map(blog => <li key={blog.id}>{blog.title}</li>)}
-            </ul>
+            <h2 style={{color:'purple'}}>{singleUser.name}</h2>
+            <h3 style={{color:'darkblue'}}>added blogs</h3>
+            <ListGroup>
+                {singleUser.blogs.map(blog => <ListGroup.Item variant="primary" key={blog.id}>{blog.title}</ListGroup.Item>)}
+            </ListGroup>
+            <Link to="/users">
+                <Button type="button">Back</Button>
+            </Link>
+            
         </div>)
 
 }
 
 const UsersView = () => {
 
-    const [singleUser,SetSingleUser] = useState(null)
 
     const users = useSelector(state => state.users)
     
-    const InitSingleUserView = (event,user) => {
-        event.preventDefault()
-        SetSingleUser(user)
+    const match = useRouteMatch('/users/:username')
+    const selectedUser = match ? users.find(u => u.username === match.params.username) : null
 
-    }
 
     return(
     <div>
-        <h2>Users</h2>
-        {singleUser === null &&
-            <table>
-            <thead>
-                <tr>
-                    <th>Username</th>
-                    <th>Blogs created</th>
-                </tr>
-            </thead>
-            <tbody>
-            {users.map(user => <tr key={user.id}><td><a href={user.username}  onClick={(e) => InitSingleUserView(e,user)}>{user.name}</a></td><td>{user.blogs.length}</td></tr>)}
-            </tbody>
-        </table>}
-        {singleUser !== null && 
-        <SingleUserView singleUser={singleUser}/>}
+        <Switch>
+            <Route path="/users/:username">
+                <SingleUserView singleUser={selectedUser}/>
+            </Route>   
+            <Route path='/users'>
+                <h2 style={{color:'purple'}}>Users</h2>
+                <Table striped bordered hover>
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Blogs created</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {users.map(user => <tr key={user.id}><td>
+                        <Link to={`/users/${user.username}`}>{user.name}</Link></td>
+                        <td>{user.blogs.length}</td></tr>)}
+                    </tbody>
+                </Table>
+            </Route>
+                    
+        </Switch>
     </div>
     )
 }
